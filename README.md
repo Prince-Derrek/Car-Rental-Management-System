@@ -85,7 +85,8 @@ This configures the database, security, and real-time simulator services.
     "ConnectionStrings": {
       "DefaultConnection": "Server=localhost;Database=CarRentalDB;User Id=YourUser;Password=YourPassword;TrustServerCertificate=True;"
     },
-    "ApiBaseUrl": "https://localhost:7124" // Your API's URL
+    "ApiSettings": {
+      "BaseUrl": "https://localhost:7124/api" // Your API's URL
     ```
 2.  **Apply Migrations:** Navigate to the `CRMS_API` project directory in your terminal and run:
     ```bash
@@ -99,7 +100,8 @@ This configures the connection to the backend and client-side libraries.
 1.  **Configure API URL:** Update `CRMS_UI/appsettings.Development.json` to point to your running backend API.
     ```json
     "ApiSettings": {
-      "BaseUrl": "https://localhost:7124" // Your API's URL
+      "BaseUrl": "https://localhost:7124/api", // Your API's URL
+      "SignalRHub:" "https://localhost:7124/api/your_telemetry_Hub_endpoint_"
     }
     ```
 2.  **(If using Tailwind CLI):** Install dependencies: Navigate to the `CRMS_UI` project directory:
@@ -127,7 +129,7 @@ The application should now be accessible at its configured HTTPS URL (e.g., `htt
 
 ### Test Accounts
 
-Register new users via the UI. Use the **backend console output** to find the email confirmation link during development.
+Register new users via the UI. Use the **browser console output** to find the email confirmation link during development.
 
 | Role      | Email Example       | Password   | Access Level                                               |
 | :-------- | :------------------ | :--------- | :--------------------------------------------------------- |
