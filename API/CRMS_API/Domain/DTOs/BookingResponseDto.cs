@@ -12,6 +12,7 @@ namespace CRMS_API.Domain.DTOs
         public string MakeModel { get; set; }
 
         public string RenterName { get; set; }
+        public decimal TotalPrice { get; set; }
 
         public int VehicleId { get; set; }
         public int RenterId { get; set; }

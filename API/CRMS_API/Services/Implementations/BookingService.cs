@@ -47,20 +47,25 @@ namespace CRMS_API.Services.Implementations
                 return (null, "Vehicle is not available for the requested dates");
             }
 
+            var duration = (request.EndDate - request.StartDate).TotalDays;
+            duration = Math.Max(1, Math.Ceiling(duration)); // Round up to the nearest whole day, minimum 1 day
+            decimal calculatedTotalPrice = vehicle.PricePerDay * (decimal)duration;
+
             var newBooking = new Booking
             {
                 VehicleId = request.VehicleId,
                 RenterId = renterId,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
-                Status = bookingStatus.Pending
+                Status = bookingStatus.Pending,
+                TotalPrice = calculatedTotalPrice // Store the calculated price
             };
 
             _context.Bookings.Add(newBooking);
             await _context.SaveChangesAsync();
 
             var renter = await _context.Users.FindAsync(renterId);
-            return (new BookingResponseDto
+            var responseDto = new BookingResponseDto
             {
                 Id = newBooking.Id,
                 VehicleId = newBooking.VehicleId,
@@ -70,8 +75,10 @@ namespace CRMS_API.Services.Implementations
                 RenterName = renter!.Name,
                 StartDate = newBooking.StartDate,
                 EndDate = newBooking.EndDate,
-                Status = newBooking.Status
-            }, string.Empty);
+                Status = newBooking.Status,
+                TotalPrice = newBooking.TotalPrice // Add calculated price to response
+            };
+            return (responseDto, string.Empty);
         }
         public async Task<bool> UpdateBookingStatusAsync(int bookingId, bookingStatus newStatus, int ownerId)
         {

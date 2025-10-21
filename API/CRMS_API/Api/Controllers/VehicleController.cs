@@ -22,7 +22,7 @@ namespace CRMS_API.Api.Controllers
         private int? GetAuthenticatedUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if(int.TryParse(userIdClaim, out int userId))
+            if (int.TryParse(userIdClaim, out int userId))
             {
                 return userId;
             }
@@ -45,12 +45,13 @@ namespace CRMS_API.Api.Controllers
             }
 
             var result = await _vehicleService.AddVehicleAsync(vehicleDto, ownerId.Value);
-            if(result == null)
+            if (result == null)
             {
                 return StatusCode(500, new { message = "Vehicle creation failed" });
             }
 
-            return CreatedAtAction(nameof(GetVehicleById), new { id = result.Id }, result);         }
+            return CreatedAtAction(nameof(GetVehicleById), new { id = result.Id }, result);
+        }
 
         [HttpGet("owner")]
         [Authorize(Roles = "Owner")]
@@ -80,12 +81,13 @@ namespace CRMS_API.Api.Controllers
             var vehicle = await _vehicleService.GetVehicleByIdAsync(id);
             if (vehicle == null)
             {
-                return NotFound();             }
+                return NotFound();
+            }
 
             return Ok(vehicle);
         }
 
-        [HttpGet("count/all")] 
+        [HttpGet("count/all")]
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult<int>> GetTotalVehicleCount()
         {
@@ -124,7 +126,7 @@ namespace CRMS_API.Api.Controllers
 
             return Ok(updatedVehicle);
         }
-        
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> DeleteVehicle(int id)
@@ -136,7 +138,7 @@ namespace CRMS_API.Api.Controllers
 
             if (!success)
             {
-                return NotFound(); 
+                return NotFound();
             }
 
             return NoContent();

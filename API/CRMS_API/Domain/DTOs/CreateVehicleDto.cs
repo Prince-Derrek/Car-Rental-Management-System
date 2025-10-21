@@ -18,5 +18,9 @@ namespace CRMS_API.Domain.DTOs
 
         [Range(1900, 2100)]
         public int Year { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+        public decimal PricePerDay { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace CRMS_API.Domain.Entities
@@ -23,6 +24,11 @@ namespace CRMS_API.Domain.Entities
         public int Year { get; set; }
 
         public User Owner { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
+        [Column(TypeName = "decimal(18, 2)")] 
+        public decimal PricePerDay { get; set; }
 
         public ICollection<Booking> Bookings { get; set; }
         public ICollection<TelemetryPoint> TelemetryPoints { get; set; }

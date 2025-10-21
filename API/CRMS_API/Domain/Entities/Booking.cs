@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 
 namespace CRMS_API.Domain.Entities
@@ -22,6 +23,9 @@ namespace CRMS_API.Domain.Entities
 
         [Required]
         public DateTime EndDate { get; set; }
+
+        [Column(TypeName = "decimal(18, 2)")] 
+        public decimal TotalPrice { get; set; }
 
         public bookingStatus Status { get; set; }
         public Vehicle Vehicle { get; set; }

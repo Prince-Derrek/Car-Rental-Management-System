@@ -13,8 +13,5 @@ namespace CRMS_API.Domain.DTOs
         [Required]
         public DateTime EndDate { get; set; }
 
-        [Required]
-        [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]
-        public decimal TotalPrice { get; set; }
     }
 }

@@ -7,6 +7,7 @@
         public string Model { get; set; }
         public string Plate { get; set; }
         public int Year { get; set; }
+        public decimal PricePerDay { get; set; }
         public int OwnerId { get; set; }
         public string OwnerName { get; set; }
     }
