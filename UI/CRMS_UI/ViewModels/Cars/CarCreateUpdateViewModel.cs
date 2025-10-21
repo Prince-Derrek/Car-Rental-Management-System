@@ -20,6 +20,11 @@ namespace CRMS_UI.ViewModels.Cars
 
         [Required]
         [Range(1990, 2030)]
-        public int Year { get; set; }
+        public int? Year { get; set; }
+
+        [Required]
+        [Range(0.01, double.MaxValue, ErrorMessage = "Price per day must be greater than zero.")]
+        [Display(Name = "Price Per Day (Ksh)")] // Nice display name for the form
+        public decimal? PricePerDay { get; set; }
     }
 }

@@ -113,7 +113,7 @@ namespace CRMS_UI.Controllers
 
             try
             {
-                await _apiService.PostAsync<RentalViewModel, RentalCreateViewModel>("booking", model, HttpContext);
+                await _apiService.PostAsync<RentalViewModel, RentalCreateViewModel>("booking/booking", model, HttpContext);
                 TempData["SuccessMessage"] = "Rental request sent successfully! Awaiting owner approval.";
                 return RedirectToAction("History");
             }

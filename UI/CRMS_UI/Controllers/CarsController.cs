@@ -68,26 +68,26 @@ namespace CRMS_UI.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CarCreateUpdateViewModel model)
+        public async Task<IActionResult> Create(CarCreateUpdateViewModel vehicleInput)
         {
             var authCheck = CheckAuth("Owner");
             if (authCheck != null) return authCheck;
 
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(vehicleInput);
             }
 
             try
             {
-                await _apiService.PostAsync<CarViewModel, CarCreateUpdateViewModel>("vehicle/add", model, HttpContext);
+                await _apiService.PostAsync<CarViewModel, CarCreateUpdateViewModel>("vehicle/add", vehicleInput, HttpContext);
                 TempData["SuccessMessage"] = "Vehicle added successfully!";
                 return RedirectToAction("Index");
             }
             catch (HttpRequestException ex)
             {
                 ModelState.AddModelError(string.Empty, $"Failed to add vehicle: {ex.Message}");
-                return View(model);
+                return View(vehicleInput);
             }
         }
 

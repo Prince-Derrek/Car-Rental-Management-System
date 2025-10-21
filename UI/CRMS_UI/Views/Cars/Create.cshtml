@@ -21,7 +21,7 @@
             }
 
             
-            <div asp-validation-summary="ModelOnly"
+            <div asp-validation-summary="All"
                  class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4">
             </div>
 
@@ -68,6 +68,15 @@
                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
                               focus:ring-indigo-500 focus:border-indigo-500" />
                 <span asp-validation-for="Year" class="text-red-600 text-sm mt-1 block"></span>
+            </div>
+
+            <div class="mb-6">
+                <label asp-for="PricePerDay" class="block text-sm font-medium text-gray-700">Price Per Day</label>
+                <input asp-for="PricePerDay"
+                       type="number"
+                       class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2
+                              focus:ring-indigo-500 focus:border-indigo-500" />
+                <span asp-validation-for="PricePerDay" class="text-red-600 text-sm mt-1 block"></span>
             </div>
 
             

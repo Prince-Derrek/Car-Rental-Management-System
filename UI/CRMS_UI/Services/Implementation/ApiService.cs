@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using CRMS_UI.Services.Interfaces;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -47,6 +48,27 @@ namespace CRMS_UI.Services.Implementation
             request.Content = new StringContent(JsonSerializer.Serialize(data), Encoding.UTF8, "application/json");
             AddAuthHeader(request, httpContext);
             return await SendRequestAsync<T>(request);
+        }
+
+        public async Task<TResponse> PostFormAsync<TResponse, TRequest>(string endpoint, TRequest data, HttpContext httpContext)
+        {
+            var request = new HttpRequestMessage(HttpMethod.Post, $"{_baseUrl}/{endpoint}");
+
+            var formData = new Dictionary<string, string>();
+            foreach (PropertyInfo prop in typeof(TRequest).GetProperties())
+            {
+                var value = prop.GetValue(data);
+                if (value != null)
+                {
+                    formData.Add(prop.Name, value.ToString());
+                }
+            }
+
+            request.Content = new FormUrlEncodedContent(formData);
+
+            AddAuthHeader(request, httpContext);
+            
+            return await SendRequestAsync<TResponse>(request);
         }
 
         public async Task<bool> DeleteAsync(string endpoint, HttpContext httpContext)
