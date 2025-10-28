@@ -110,5 +110,32 @@ namespace CRMS_API.Services.Implementations
 
             return true; 
         }
+        public async Task<IEnumerable<UserDto>> GetUsersAsync()
+        {
+            return await _context.Users
+                .OrderBy(u => u.Name)
+                .Select(u => new UserDto 
+                {
+                    Id = u.Id,
+                    Name = u.Name,
+                    Email = u.Email,
+                    Role = u.Role,
+                    IsActive = u.IsActive,
+                    IsEmailConfirmed = u.IsEmailConfirmed
+                })
+                .ToListAsync();
+        }
+
+        public async Task<bool> ToggleUserStatusAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null || user.Role == userRole.SuperAdmin) 
+            {
+                return false;
+            }
+            user.IsActive = !user.IsActive; 
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

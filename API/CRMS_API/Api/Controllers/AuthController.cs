@@ -90,5 +90,24 @@ namespace CRMS_API.Api.Controllers
                 </html>";
             return Content(htmlContent, "text/html");
         }
+        [HttpGet("users")] 
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<ActionResult<IEnumerable<UserDto>>> GetUsers()
+        {
+            var users = await _authService.GetUsersAsync();
+            return Ok(users);
+        }
+
+        [HttpPut("users/{id}/toggle-status")] 
+        [Authorize(Roles = "SuperAdmin")]
+        public async Task<IActionResult> ToggleUserStatus(int id)
+        {
+            var success = await _authService.ToggleUserStatusAsync(id);
+            if (!success)
+            {
+                return NotFound(new { message = "User not found or cannot be modified." });
+            }
+            return Ok(new { message = "User status updated successfully." });
+        }
     }
 }

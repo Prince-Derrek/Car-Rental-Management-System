@@ -55,6 +55,7 @@ builder.Services.AddScoped<ITelemetryService, TelemetryService>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<IJwtGenerator, JwtGenerator>();
 builder.Services.AddSingleton<IEmailService, EmailService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.Services.AddHostedService<GpsSimulatorService>();
 
@@ -121,6 +122,60 @@ builder.Services.AddCors(options =>
 
 
 var app = builder.Build();
+
+//seeding super admin
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    try
+    {
+        var context = services.GetRequiredService<AppDbContext>();
+        var passwordHasher = services.GetRequiredService<IPasswordHasher<User>>();
+        var logger = services.GetRequiredService<ILogger<Program>>(); 
+
+        context.Database.Migrate(); 
+
+        // Seed Super Admin
+        await SeedSuperAdmin(context, passwordHasher, logger, builder.Configuration); 
+    }
+    catch (Exception ex)
+    {
+        var logger = services.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred during database seeding.");
+    }
+}
+
+async Task SeedSuperAdmin(AppDbContext context, IPasswordHasher<User> passwordHasher, ILogger<Program> logger, IConfiguration config)
+{
+    
+    var superAdminEmail = config["SuperAdmin:Email"];
+    var superAdminPassword = config["SuperAdmin:Password"]; // CHANGE THIS! Use secrets.json or env vars.
+
+    if (!await context.Users.AnyAsync(u => u.Role == userRole.SuperAdmin))
+    {
+        var superAdmin = new User
+        {
+            Name = "Super Admin",
+            Email = superAdminEmail,
+            Role = userRole.SuperAdmin,
+            IsEmailConfirmed = true, 
+            IsActive = true,
+        };
+        superAdmin.PasswordHash = passwordHasher.HashPassword(superAdmin, superAdminPassword);
+
+        context.Users.Add(superAdmin);
+        await context.SaveChangesAsync();
+
+        logger.LogInformation("Super Admin user created.");
+        
+        if (app.Environment.IsDevelopment())
+        {
+            logger.LogWarning($"Super Admin Email: {superAdminEmail}");
+            logger.LogWarning($"Super Admin Initial Password: {superAdminPassword}");
+        }
+    }
+}
+
 
 if (app.Environment.IsDevelopment())
 {
