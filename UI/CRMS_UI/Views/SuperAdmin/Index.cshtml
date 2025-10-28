@@ -1,0 +1,41 @@
+﻿@model CRMS_UI.ViewModels.Dashboard.SuperAdminDashboardViewModel
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Super Admin Dashboard";
+}
+
+<div class="py-8">
+    <h1 class="text-3xl font-extrabold text-gray-900">Welcome, @Model.UserName (Super Admin)</h1>
+    <p class="mt-2 text-lg text-gray-600">System-Wide Analytics Overview.</p>
+
+    @if (TempData["SuccessMessage"] != null) { }
+    @if (TempData["ErrorMessage"] != null) { }
+
+    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Total Users</dt> <dd>@Model.TotalUsers (@Model.ActiveUsers Active)</dd> </dl> </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Total Vehicles</dt> <dd>@Model.TotalVehicles (@Model.VehiclesAvailable Available)</dd> </dl> </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Bookings</dt> <dd>@Model.TotalBookings Total (@Model.ActiveBookings Active / @Model.PendingBookings Pending)</dd> </dl> </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Total Revenue (Completed)</dt> <dd>Ksh @Model.TotalRevenue.ToString("N0")</dd> </dl> </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Most Booked Model</dt> <dd>@Model.MostBookedModel</dd> </dl> </div>
+        </div>
+        <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="p-5"> <dl> <dt>Owner with Most Bookings</dt> <dd>@Model.OwnerWithMostBookings</dd> </dl> </div>
+        </div>
+    </div>
+
+    <div class="mt-10">
+        <h2 class="text-xl font-bold mb-4">Management</h2>
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <a asp-action="UserList" asp-controller="SuperAdmin" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-center">Manage Users</a>
+        </div>
+    </div>
+</div>

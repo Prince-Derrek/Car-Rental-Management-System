@@ -23,7 +23,12 @@
                         <a asp-controller="Rentals" asp-action="Index" class="text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Bookings</a>
                         <a asp-controller="Tracking" asp-action="Index" class="text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Live Map</a>
                     }
-                    else if (userRole == "Renter")
+                    else if(userRole == "SuperAdmin")
+                    {
+                        <a class="nav-link" asp-controller="SuperAdmin" asp-action="Index">SA Dashboard</a>
+                        <a class="nav-link" asp-controller="SuperAdmin" asp-action="UserList">Manage Users</a>
+                    }
+                    else
                     {
                         <a asp-controller="Dashboard" asp-action="UserDashboard" class="text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Dashboard</a>
                         <a asp-controller="Cars" asp-action="Index" class="text-gray-900 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition duration-150">Browse Cars</a>

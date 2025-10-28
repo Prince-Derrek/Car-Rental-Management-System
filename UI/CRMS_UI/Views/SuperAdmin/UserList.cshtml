@@ -1,0 +1,57 @@
+﻿@model List<CRMS_UI.ViewModels.ApiDTOs.UserDto>
+@using CRMS_UI.ViewModels.Auth; // For userRole enum
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Manage Users";
+}
+
+<div class="py-8">
+    <h1 class="text-3xl font-extrabold text-gray-900 mb-6">@ViewData["Title"]</h1>
+
+    @if (TempData["SuccessMessage"] != null) { /* Success Alert */ }
+    @if (TempData["ErrorMessage"] != null) { /* Error Alert */ }
+
+    <div class="overflow-x-auto shadow-xl sm:rounded-lg bg-white">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confirmed</th>
+                    <th scope="col" class="relative px-6 py-3"><span class="sr-only">Actions</span></th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200">
+                @foreach (var user in Model)
+                {
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">@user.Name</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@user.Email</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@user.Role</td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full @(user.IsActive ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800")">
+                                @(user.IsActive ? "Active" : "Disabled")
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            @(user.IsEmailConfirmed ? "Yes" : "No")
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            @if (user.Role != userRole.SuperAdmin) // Don't allow disabling SuperAdmin
+                            {
+                                <form asp-action="ToggleUserStatus" asp-controller="SuperAdmin" asp-route-id="@user.Id" method="post" class="inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="text-indigo-600 hover:text-indigo-900">
+                                        @(user.IsActive ? "Disable" : "Enable")
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

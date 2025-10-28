@@ -79,34 +79,34 @@ namespace CRMS_UI.Controllers
                 HttpContext.Session.SetString("UserRole", response.Role);
                 HttpContext.Session.SetString("UserName", response.Name);
 
-                if (response.Role.Equals("Owner", StringComparison.OrdinalIgnoreCase))
+                if (response.Role.Equals("SuperAdmin", StringComparison.OrdinalIgnoreCase))
                 {
-                    return RedirectToAction("AdminDashboard", "Dashboard");
+                    return RedirectToAction("Index", "SuperAdmin"); 
                 }
-                else if (response.Role.Equals("Renter", StringComparison.OrdinalIgnoreCase))
+                else if (response.Role.Equals("Owner", StringComparison.OrdinalIgnoreCase))
                 {
-                    return RedirectToAction("UserDashboard", "Dashboard");
+                    return RedirectToAction("AdminDashboard", "Dashboard"); 
                 }
-
-                ModelState.AddModelError(string.Empty, "Login successful, but role is unrecognized.");
-                HttpContext.Session.Clear();
-                return View(model);
+                else // Renter or default
+                {
+                    return RedirectToAction("UserDashboard", "Dashboard"); 
+                }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException ex) 
             {
                 if (ex.Message.Contains("Email has not been confirmed"))
                 {
-                    ModelState.AddModelError(string.Empty, "You must confirm your email before you can log in. Please check your inbox.");
+                    ModelState.AddModelError(string.Empty, "You must confirm your email before you can log in. Please check your inbox (or backend console).");
                 }
-                else
+                else 
                 {
                     ModelState.AddModelError(string.Empty, "Login failed. Please check your credentials and try again.");
                 }
                 return View(model);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "An unexpected error occurred during login.");
+                ModelState.AddModelError(string.Empty, $"An unexpected error occurred: {ex.Message}");
                 return View(model);
             }
         }

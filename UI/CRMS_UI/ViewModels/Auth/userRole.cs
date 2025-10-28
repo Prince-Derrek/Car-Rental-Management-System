@@ -3,6 +3,7 @@
     public enum userRole
     {
         Renter = 1,
-        Owner = 2
+        Owner = 2,
+        SuperAdmin = 3
     }
 }
