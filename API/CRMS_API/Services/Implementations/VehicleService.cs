@@ -29,7 +29,8 @@ namespace CRMS_API.Services.Implementations
                 Make = vehicleDto.Make,
                 Model = vehicleDto.Model,
                 Plate = vehicleDto.Plate,
-                Year = vehicleDto.Year
+                Year = vehicleDto.Year,
+                PricePerDay = vehicleDto.PricePerDay
             };
 
             _context.Vehicles.Add(newVehicle);
@@ -43,7 +44,8 @@ namespace CRMS_API.Services.Implementations
                 Plate = newVehicle.Plate,
                 Year = newVehicle.Year,
                 OwnerId = newVehicle.OwnerId,
-                OwnerName = owner.Name
+                OwnerName = owner.Name,
+                PricePerDay = vehicleDto.PricePerDay
             };
         }
         public async Task<VehicleResponseDto?> GetVehicleByIdAsync(int vehicleId)

@@ -163,7 +163,8 @@ namespace CRMS_API.Services.Implementations
                 MakeModel = $"{booking.Vehicle?.Make} {booking.Vehicle?.Model}",
                 RenterName = booking.Renter?.Name ?? "N/A",
                 VehicleId = booking.VehicleId,
-                RenterId = booking.RenterId
+                RenterId = booking.RenterId,
+                TotalPrice = booking.TotalPrice
             };
         }
     }
