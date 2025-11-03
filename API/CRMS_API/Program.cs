@@ -58,6 +58,7 @@ builder.Services.AddSingleton<IEmailService, EmailService>();
 builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
 
 builder.Services.AddHostedService<GpsSimulatorService>();
+builder.Services.AddHostedService<BookingStatusUpdaterService>();
 
 
 var jwtKey = builder.Configuration["Jwt:Key"];

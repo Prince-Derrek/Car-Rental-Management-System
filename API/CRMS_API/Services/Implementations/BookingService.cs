@@ -132,18 +132,16 @@ namespace CRMS_API.Services.Implementations
             var now = DateTime.UtcNow;
 
             return await _context.Bookings
-                .CountAsync(b => b.Vehicle.OwnerId == ownerId &&
-                     b.Status == bookingStatus.Approved &&
-                     b.StartDate <= now &&
-                     b.EndDate >= now);
+               .CountAsync(b => b.Vehicle.OwnerId == ownerId &&
+               b.Status == bookingStatus.Active); 
         }
 
         public async Task<int> GetMyActiveBookingsCountAsync(int renterId)
         {
             var now = DateTime.UtcNow;
             return await _context.Bookings
-                .CountAsync(b => b.RenterId == renterId &&
-                     b.Status == bookingStatus.Approved && b.StartDate <= now && b.EndDate >= now);
+               .CountAsync(b => b.RenterId == renterId &&
+               b.Status == bookingStatus.Active);
         }
 
         public async Task<int> GetMyPendingBookingsCountAsync(int renterId)
