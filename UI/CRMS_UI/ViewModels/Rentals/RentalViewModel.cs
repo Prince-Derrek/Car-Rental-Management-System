@@ -2,11 +2,11 @@
 {
     public enum BookingStatus
     {
-        Pending = 0,
-        Approved = 1,
-        Active = 2,
-        Completed = 3,
-        Cancelled = 4
+        Pending = 1,
+        Approved = 2,
+        Active = 3,
+        Completed = 4,
+        Cancelled = 5
     }
 
     public class RentalViewModel
@@ -21,12 +21,6 @@
         public BookingStatus Status { get; set; }
         public string StatusDisplay => Status.ToString();
 
-        public decimal TotalCost => CalculateCost();
-
-        private decimal CalculateCost()
-        {
-            var days = (EndDate - StartDate).TotalDays;
-            return (decimal)Math.Round(days * 50.0, 2);
-        }
+        public decimal TotalPrice { get; set; }
     }
 }

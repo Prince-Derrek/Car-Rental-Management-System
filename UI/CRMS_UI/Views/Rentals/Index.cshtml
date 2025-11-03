@@ -40,7 +40,7 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@rental.MakeModel (@rental.Plate)</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@rental.RenterName</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">@rental.StartDate.ToShortDateString() - @rental.EndDate.ToShortDateString()</td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold">Ksh @rental.TotalCost.ToString("N0")</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-green-600 font-bold">Ksh @rental.TotalPrice.ToString("N0")</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             @{
                                                                 var badge = rental.Status switch

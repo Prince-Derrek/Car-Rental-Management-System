@@ -141,7 +141,7 @@ namespace CRMS_UI.Controllers
             {
                 var updateModel = new RentalUpdateStatusViewModel { RentalId = id, NewStatus = newStatus };
 
-                var success = await _apiService.PutAsync<bool, RentalUpdateStatusViewModel>($"api/booking/{id}/status", updateModel, HttpContext);
+                var success = await _apiService.PutAsync<bool, RentalUpdateStatusViewModel>($"booking/{id}/status", updateModel, HttpContext);
 
                 if (success)
                 {
