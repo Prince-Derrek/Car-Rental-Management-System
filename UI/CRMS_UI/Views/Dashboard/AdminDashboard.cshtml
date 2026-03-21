@@ -1,20 +1,18 @@
 ﻿@model CRMS_UI.ViewModels.Dashboard.AdminDashboardViewModel
 
 @{
-        Layout = "_Layout";
+    Layout = "_Layout";
     ViewData["Title"] = "Admin Dashboard";
-
-        var userName = Context.Session.GetString("UserName") ?? "Admin";
+    var userName = Context.Session.GetString("UserName") ?? "Admin";
 }
 
-<div class="py-8">
-    <h1 class="text-3xl font-extrabold text-gray-900">Welcome back, @Model.UserName (Owner)</h1>
-    <p class="mt-2 text-lg text-gray-600">Overview of the rental system and fleet management controls.</p>
+<div class="py-8 px-4 sm:px-6 lg:px-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-extrabold text-gray-900">Welcome back, @Model.UserName (Owner)</h1>
+        <p class="mt-2 text-lg text-gray-600">Overview of the rental system and fleet management controls.</p>
+    </div>
 
-    
-    <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-
-        
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-indigo-200">
             <div class="p-5">
                 <div class="flex items-center">
@@ -24,9 +22,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Active Rentals</dt>
-                            <dd>
-                                <div class="text-3xl font-extrabold text-gray-900">@Model.ActiveRentals</div>
-                            </dd>
+                            <dd class="text-3xl font-extrabold text-gray-900">@Model.ActiveRentals</dd>
                         </dl>
                     </div>
                 </div>
@@ -36,7 +32,6 @@
             </div>
         </div>
 
-        
         <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-green-200">
             <div class="p-5">
                 <div class="flex items-center">
@@ -46,9 +41,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Total Vehicles</dt>
-                            <dd>
-                                <div class="text-3xl font-extrabold text-gray-900">@Model.TotalVehicles</div>
-                            </dd>
+                            <dd class="text-3xl font-extrabold text-gray-900">@Model.TotalVehicles</dd>
                         </dl>
                     </div>
                 </div>
@@ -58,7 +51,6 @@
             </div>
         </div>
 
-        
         <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-yellow-200">
             <div class="p-5">
                 <div class="flex items-center">
@@ -68,9 +60,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Pending Approvals</dt>
-                            <dd>
-                                <div class="text-3xl font-extrabold text-gray-900">@Model.PendingApprovals</div>
-                            </dd>
+                            <dd class="text-3xl font-extrabold text-gray-900">@Model.PendingApprovals</dd>
                         </dl>
                     </div>
                 </div>
@@ -80,7 +70,6 @@
             </div>
         </div>
 
-        
         <div class="bg-white overflow-hidden shadow-lg rounded-xl border border-blue-200">
             <div class="p-5">
                 <div class="flex items-center">
@@ -90,9 +79,7 @@
                     <div class="ml-5 w-0 flex-1">
                         <dl>
                             <dt class="text-sm font-medium text-gray-500 truncate">Tracking Enabled</dt>
-                            <dd>
-                                <div class="text-3xl font-extrabold text-gray-900">@Model.TrackingEnabledPercent %</div>
-                            </dd>
+                            <dd class="text-3xl font-extrabold text-gray-900">@Model.TrackingEnabledPercent %</dd>
                         </dl>
                     </div>
                 </div>
@@ -103,7 +90,29 @@
         </div>
     </div>
 
-    
+    <div class="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-bold text-gray-800">Fleet Utilization</h3>
+                <span class="text-xs font-semibold px-2 py-1 bg-indigo-50 text-indigo-600 rounded">Live Status</span>
+            </div>
+            <div class="relative" style="height: 300px;">
+                <canvas id="utilizationChart"></canvas>
+            </div>
+        </div>
+
+        <div class="bg-white p-6 shadow-lg rounded-xl border border-gray-200 flex flex-col items-center">
+            <h3 class="text-lg font-bold text-gray-800 self-start mb-4">Tracking Coverage</h3>
+            <div class="relative flex-1 w-full flex justify-center items-center" style="max-height: 250px;">
+                <canvas id="trackingGauge"></canvas>
+                <div class="absolute mt-8 text-center">
+                    <span class="text-2xl font-bold text-gray-800">@Model.TrackingEnabledPercent%</span>
+                    <p class="text-xs text-gray-500">GPS Active</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="mt-10 bg-white shadow-lg rounded-xl p-6">
         <h2 class="text-xl font-bold text-gray-900 border-b pb-3 mb-4">Quick Actions</h2>
         <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
@@ -122,3 +131,57 @@
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Utilization Bar Chart
+        const utilCtx = document.getElementById('utilizationChart').getContext('2d');
+        new Chart(utilCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Total Fleet', 'Active Rentals', 'Pending Approvals'],
+                datasets: [{
+                    label: 'Count',
+                    data: @Html.Raw(Json.Serialize(Model.UtilizationValues)),
+                    backgroundColor: ['#94a3b8', '#6366f1', '#f59e0b'],
+                    borderRadius: 6,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Tracking Health Gauge (Semi-Doughnut)
+        const trackCtx = document.getElementById('trackingGauge').getContext('2d');
+        new Chart(trackCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Enabled', 'Disabled'],
+                datasets: [{
+                    data: @Html.Raw(Json.Serialize(Model.TrackingGaugeData)),
+                    backgroundColor: ['#3b82f6', '#f1f5f9'],
+                    borderWidth: 0,
+                    weight: 0.5
+                }]
+            },
+            options: {
+                rotation: -90,
+                circumference: 180,
+                cutout: '85%',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } }
+            }
+        });
+    </script>
+}

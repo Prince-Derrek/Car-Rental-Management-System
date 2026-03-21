@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using CRMS_UI.Services.Interfaces;
+﻿using CRMS_UI.Services.Interfaces;
+using CRMS_UI.ViewModels.ApiDTOs;
 using CRMS_UI.ViewModels.Dashboard;
+using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 namespace CRMS_UI.Controllers
 {
@@ -32,8 +33,6 @@ namespace CRMS_UI.Controllers
                 return RedirectToAction("UserDashboard");
             }
 
-            ViewData["Title"] = "Admin Dashboard";
-
             var viewModel = new AdminDashboardViewModel
             {
                 UserName = HttpContext.Session.GetString("UserName") ?? "Admin"
@@ -41,21 +40,22 @@ namespace CRMS_UI.Controllers
 
             try
             {
-                var activeRentalsTask = _apiService.GetAsync<int>("booking/count/owner/active", HttpContext);
-                var totalVehiclesTask = _apiService.GetAsync<int>("vehicle/count/all", HttpContext);
-                var pendingApprovalsTask = _apiService.GetAsync<int>("booking/count/pending", HttpContext);
-                var trackingEnabledTask = _apiService.GetAsync<int>("telemetry/count/active", HttpContext);
+                // 1. Single API call to get the entire owner-specific dataset
+                var dto = await _apiService.GetAsync<AdminDashboardDto>("analytics/owner-overview", HttpContext);
 
-                await Task.WhenAll(activeRentalsTask, totalVehiclesTask, pendingApprovalsTask, trackingEnabledTask);
+                // 2. Map Summary Stats
+                viewModel.ActiveRentals = dto.ActiveRentals;
+                viewModel.TotalVehicles = dto.TotalVehicles;
+                viewModel.PendingApprovals = dto.PendingApprovals;
+                viewModel.TrackingEnabledPercent = dto.TrackingEnabledPercent;
 
-                viewModel.ActiveRentals = activeRentalsTask.Result;
-                viewModel.TotalVehicles = totalVehiclesTask.Result;
-                viewModel.PendingApprovals = pendingApprovalsTask.Result;
-                viewModel.TrackingEnabledPercent = trackingEnabledTask.Result;
+                // 3. Map Chart Data
+                viewModel.UtilizationValues = new List<int> { dto.TotalVehicles, dto.ActiveRentals, dto.PendingApprovals };
+                viewModel.TrackingGaugeData = new List<int> { dto.TrackingEnabledPercent, 100 - dto.TrackingEnabledPercent };
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"Failed to fetch dashboard data: {ex.Message}";
+                TempData["ErrorMessage"] = $"Dashboard error: {ex.Message}";
             }
 
             return View(viewModel);

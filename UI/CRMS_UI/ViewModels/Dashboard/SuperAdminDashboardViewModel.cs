@@ -14,5 +14,9 @@
         public decimal TotalRevenue { get; set; }
         public string MostBookedModel { get; set; }
         public string OwnerWithMostBookings { get; set; }
+
+        public List<string> RevenueLabels { get; set; } = new();
+        public List<decimal> RevenueValues { get; set; } = new();
+        public List<int> StatusValues { get; set; } = new();
     }
 }

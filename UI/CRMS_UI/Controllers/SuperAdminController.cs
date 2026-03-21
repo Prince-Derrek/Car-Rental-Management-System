@@ -35,6 +35,9 @@ namespace CRMS_UI.Controllers
                 viewModel.TotalRevenue = analyticsDto.TotalRevenue;
                 viewModel.MostBookedModel = analyticsDto.MostBookedModel;
                 viewModel.OwnerWithMostBookings = analyticsDto.OwnerWithMostBookings;
+                viewModel.RevenueLabels = analyticsDto.RevenueLabels;
+                viewModel.RevenueValues = analyticsDto.RevenueValues;
+                viewModel.StatusValues = analyticsDto.StatusValues;
             }
             catch (HttpRequestException ex)
             {

@@ -26,13 +26,19 @@ namespace CRMS_UI.Controllers
             return null;
         }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string? make, string? model, int? year, decimal? minPrice, decimal? maxPrice)
         {
             var authCheck = CheckAuth();
             if (authCheck != null) return authCheck;
 
             var userRole = HttpContext.Session.GetString("UserRole");
             var isOwner = userRole == "Owner";
+
+            ViewBag.Make = make;
+            ViewBag.Model = model;
+            ViewBag.Year = year;
+            ViewBag.MinPrice = minPrice;
+            ViewBag.MaxPrice = maxPrice;
 
             try
             {
@@ -45,7 +51,25 @@ namespace CRMS_UI.Controllers
                 else
                 {
                     ViewData["Title"] = "Available Fleet for Rent";
-                    cars = await _apiService.GetAsync<List<CarViewModel>>("vehicle/all", HttpContext);
+
+                    var queryParams = new List<string>();
+                    if (!string.IsNullOrEmpty(make)) queryParams.Add($"make={make}");
+                    if (!string.IsNullOrEmpty(model)) queryParams.Add($"model={model}");
+                    if (year.HasValue) queryParams.Add($"year={year}");
+                    if (minPrice.HasValue) queryParams.Add($"minPrice={minPrice}");
+                    if (maxPrice.HasValue) queryParams.Add($"maxPrice={maxPrice}");
+
+                    string endpoint = "vehicle/search";
+                    if (queryParams.Any())
+                    {
+                        endpoint += "?" + string.Join("&", queryParams);
+                    }
+                    else
+                    {
+                        endpoint = "vehicle/search";
+                    }
+
+                    cars = await _apiService.GetAsync<List<CarViewModel>>(endpoint, HttpContext);
                 }
                 return View(cars);
             }
