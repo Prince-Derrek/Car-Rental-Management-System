@@ -8,7 +8,6 @@ namespace CRMS_API.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-
     [Authorize]
     public class VehicleController : ControllerBase
     {
@@ -27,6 +26,19 @@ namespace CRMS_API.Api.Controllers
                 return userId;
             }
             return null;
+        }
+
+        [HttpGet("search")]
+        [AllowAnonymous] 
+        public async Task<ActionResult<IEnumerable<VehicleResponseDto>>> SearchVehicles(
+            [FromQuery] string? make,
+            [FromQuery] string? model,
+            [FromQuery] int? year,
+            [FromQuery] decimal? minPrice,
+            [FromQuery] decimal? maxPrice)
+        {
+            var results = await _vehicleService.SearchVehiclesAsync(make, model, year, minPrice, maxPrice);
+            return Ok(results);
         }
 
         [HttpPost("add")]
@@ -64,7 +76,6 @@ namespace CRMS_API.Api.Controllers
             }
 
             var vehicles = await _vehicleService.GetVehiclesByOwnerIdAsync(ownerId.Value);
-
             return Ok(vehicles);
         }
 

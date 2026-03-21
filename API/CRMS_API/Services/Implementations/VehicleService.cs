@@ -48,26 +48,46 @@ namespace CRMS_API.Services.Implementations
                 PricePerDay = vehicleDto.PricePerDay
             };
         }
+
+        public async Task<IEnumerable<VehicleResponseDto>> SearchVehiclesAsync(string? make, string? model, int? year, decimal? minPrice, decimal? maxPrice)
+        {
+            var query = _context.Vehicles.Include(v => v.Owner).AsQueryable();
+
+            // Dynamic Filtering
+            if (!string.IsNullOrWhiteSpace(make))
+                query = query.Where(v => v.Make.Contains(make));
+
+            if (!string.IsNullOrWhiteSpace(model))
+                query = query.Where(v => v.Model.Contains(model));
+
+            if (year.HasValue)
+                query = query.Where(v => v.Year == year.Value);
+
+            if (minPrice.HasValue)
+                query = query.Where(v => v.PricePerDay >= minPrice.Value);
+
+            if (maxPrice.HasValue)
+                query = query.Where(v => v.PricePerDay <= maxPrice.Value);
+
+            return await query.Select(v => new VehicleResponseDto
+            {
+                Id = v.Id,
+                Make = v.Make,
+                Model = v.Model,
+                Plate = v.Plate,
+                Year = v.Year,
+                PricePerDay = v.PricePerDay, // Ensure Price is returned
+                OwnerId = v.OwnerId,
+                OwnerName = v.Owner.Name
+            }).ToListAsync();
+        }
         public async Task<VehicleResponseDto?> GetVehicleByIdAsync(int vehicleId)
         {
             var vehicle = await _context.Vehicles
                 .Include(v => v.Owner)
                 .FirstOrDefaultAsync(v => v.Id == vehicleId);
-            if (vehicle == null)
-            {
-                return null;
-            }
 
-            return new VehicleResponseDto
-            {
-                Id = vehicle.Id,
-                Make = vehicle.Make,
-                Model = vehicle.Model,
-                Plate = vehicle.Plate,
-                Year = vehicle.Year,
-                OwnerId = vehicle.OwnerId,
-                OwnerName = vehicle.Owner.Name
-            };
+            return vehicle == null ? null : MapVehicleToResponseDto(vehicle);
         }
         public async Task<IEnumerable<VehicleResponseDto>> GetVehiclesByOwnerIdAsync(int ownerId)
         {
@@ -97,6 +117,7 @@ namespace CRMS_API.Services.Implementations
                     Model = v.Model,
                     Plate = v.Plate,
                     Year = v.Year,
+                    PricePerDay = v.PricePerDay,
                     OwnerId = v.OwnerId,
                     OwnerName = v.Owner.Name
                 }).ToListAsync();
@@ -171,6 +192,7 @@ namespace CRMS_API.Services.Implementations
                 Make = vehicle.Make,
                 Model = vehicle.Model,
                 Year = vehicle.Year,
+                PricePerDay = vehicle.PricePerDay,
                 OwnerName = vehicle.Owner?.Name ?? "N/A"
             };
         }

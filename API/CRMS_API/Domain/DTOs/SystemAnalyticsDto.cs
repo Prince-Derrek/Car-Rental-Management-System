@@ -13,5 +13,11 @@
         public decimal TotalRevenue { get; set; }
         public string MostBookedModel { get; set; } = "N/A";
         public string OwnerWithMostBookings { get; set; } = "N/A";
+
+        public List<string> RevenueLabels { get; set; } = new(); 
+        public List<decimal> RevenueValues { get; set; } = new(); 
+
+        public List<string> StatusLabels { get; set; } = new() { "Active", "Pending", "Completed" };
+        public List<int> StatusValues { get; set; } = new(); 
     }
 }

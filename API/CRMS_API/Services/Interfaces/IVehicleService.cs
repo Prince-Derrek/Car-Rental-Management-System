@@ -8,6 +8,7 @@ namespace CRMS_API.Services.Interfaces
         Task<VehicleResponseDto?> GetVehicleByIdAsync(int vehicleId);
         Task<IEnumerable<VehicleResponseDto>> GetVehiclesByOwnerIdAsync(int ownerId);
         Task<IEnumerable<VehicleResponseDto>> GetAllVehiclesAsync();
+        Task<IEnumerable<VehicleResponseDto>> SearchVehiclesAsync(string? make, string? model, int? year, decimal? minPrice, decimal? maxPrice);
         Task<int> GetTotalVehicleCountAsync();
         Task<int> GetAvailableVehicleCountAsync();
         Task<VehicleResponseDto?> UpdateVehicleAsync(int vehicleId, UpdateVehicleDto vehicleDto, int ownerId);
