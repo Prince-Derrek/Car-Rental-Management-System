@@ -10,5 +10,7 @@
         public decimal PricePerDay { get; set; }
         public int OwnerId { get; set; }
         public string OwnerName { get; set; }
+
+        public bool IsManuallyDisabled { get; set; }
     }
 }

@@ -14,5 +14,7 @@ namespace CRMS_API.Services.Interfaces
         Task<VehicleResponseDto?> UpdateVehicleAsync(int vehicleId, UpdateVehicleDto vehicleDto, int ownerId);
         Task<bool> DeleteVehicleAsync(int vehicleId, int ownerId);
 
+        Task<VehicleResponseDto?> ToggleAvailabilityAsync(int vehicleId, int ownerId);
+
     }
 }

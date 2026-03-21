@@ -26,6 +26,7 @@ namespace CRMS_API.Domain.Entities
         public User Owner { get; set; }
 
         public bool IsTrackingEnabled { get; set; } = false;
+        public bool IsManuallyDisabled { get; set; } = false;
 
         [Required]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price must be greater than zero.")]

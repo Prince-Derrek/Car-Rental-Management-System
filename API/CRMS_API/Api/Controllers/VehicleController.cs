@@ -113,6 +113,26 @@ namespace CRMS_API.Api.Controllers
             return Ok(count);
         }
 
+        [HttpPatch("{id}/toggle-availability")]
+        [Authorize(Roles = "Owner")]
+        public async Task<IActionResult> ToggleAvailability(int id)
+        {
+            var ownerId = GetAuthenticatedUserId();
+            if (!ownerId.HasValue)
+            {
+                return Unauthorized(new { message = "User not identified from token" });
+            }
+
+            var result = await _vehicleService.ToggleAvailabilityAsync(id, ownerId.Value);
+
+            if (result == null)
+            {
+                return NotFound(new { message = "Vehicle not found or you do not have permission." });
+            }
+
+            return Ok(result);
+        }
+
         [HttpPut("{id}")]
         [Authorize(Roles = "Owner")]
         public async Task<IActionResult> UpdateVehicle(int id, [FromBody] UpdateVehicleDto vehicleDto)
